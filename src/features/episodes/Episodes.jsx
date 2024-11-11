@@ -10,6 +10,7 @@ import { useDebounce } from '../../hooks/useDebounce.hook.jsx';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import GridSkeletonLoader from "../../components/GridSkeletonLoader/GridSkeletonLoader.jsx";
+import ListSkeletonLoader from "../../components/ListSkeletonLoader/ListSkeletonLoader.jsx";
 
 const VirtualizedEpisodeGridItem = lazy(() => import('./EpisodeCard/VirtualizedEpisodeCard/VirtualizedEpisodeCard.jsx'));
 
@@ -100,6 +101,8 @@ export const Episodes = () => {
       <Search value={searchTerm} onChange={onSearchChange} />
       <Suspense fallback={<GridSkeletonLoader itemCount={9}/>} >
         <Grid style={{ height: '100vh' }} container spacing={6}>
+          {!episodes.length && <GridSkeletonLoader itemCount={9} />}
+
           <AutoSizer>
             {({ height, width }) => {
               const columnCount = getVirtualizedColumnCount();

@@ -3,7 +3,7 @@ import { Grid, Skeleton } from '@mui/material';
 
 const GridSkeletonLoader = ({ itemCount = 6 }) => {
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={6}>
       {Array.from(new Array(itemCount)).map((_, index) => (
         <Grid item xs={12} sm={6} md={4} key={index}>
           <Skeleton variant="rectangular" width="100%" height={200} />
