@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, InputBase, Stack } from '@mui/material';
+import { InputBase, Stack } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 export const Search = ({ value, onChange }) => {
@@ -9,7 +9,7 @@ export const Search = ({ value, onChange }) => {
     <Stack
       style={{
         position: 'fixed',
-        zIndex: 100,
+        zIndex: 1,
         top: 90,
         right: 20,
         backgroundColor: 'white',

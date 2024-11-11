@@ -1,19 +1,11 @@
 import {
-  Alert,
-  Avatar,
-  Button,
   Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CardMedia,
   ClickAwayListener,
-  Fade,
-  Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
 import { memo, useState } from 'react';
-import { formatDate } from '../../../utils/date.utils.js';
+import CardBack from "./CardBack/CardBack.jsx";
+import CardFront from "./CardFront/CardFront.jsx";
 
 const StyledCard = styled(Card)`
   width: 345px;
@@ -27,12 +19,12 @@ const StyledCard = styled(Card)`
 
   &:hover {
     box-shadow:
-      rgba(0, 0, 0, 0.19) 0px 10px 20px,
-      rgba(0, 0, 0, 0.23) 0px 6px 6px;
+      rgba(0, 0, 0, 0.19) 0 10px 20px,
+      rgba(0, 0, 0, 0.23) 0 6px 6px;
   }
 `;
 
-const FlashContent = styled.div`
+const FadeIn = styled.div`
   animation: fade 500ms ease-in-out;
   pointer-events: ${({ isSelected }) => (isSelected ? 'auto' : 'none')};
 
@@ -74,72 +66,11 @@ const EpisodeCard = ({ episode }) => {
     <ClickAwayListener onClickAway={handleClickAway}>
       <StyledCard onClick={handleCardClick}>
         {!isSelected ? (
-          <>
-            <CardMedia
-              loading="lazy"
-              component="img"
-              height="192"
-              image={revisionlessUrl}
-            />
-            <CardContent>
-              <Typography
-                variant="h6"
-                style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                component="div"
-              >
-                {name}
-              </Typography>
-              <Typography
-                fontSize={'12px'}
-                variant="overline"
-                color="text.secondary"
-                component="div"
-              >
-                {`Season: ${season} / Episode: ${ep}`}
-              </Typography>
-              <Typography fontSize={'12px'} variant="overline" color="text.secondary">
-                {`First aired: ${formatDate(air_date)}`}
-              </Typography>
-            </CardContent>
-          </>
+          <FadeIn>
+            <CardFront name={name} imageUrl={revisionlessUrl} ep={ep} season={season} airDate={air_date} />
+          </FadeIn>
         ) : (
-          <FlashContent>
-            <>
-              <CardContent>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      sx={{ width: 72, height: 72 }}
-                      alt="avatar"
-                      src={revisionlessUrl}
-                    />
-                  }
-                  title={name}
-                  subheader={formatDate(air_date)}
-                  titleTypographyProps={{ variant: 'p1' }}
-                  subheaderTypographyProps={{ variant: 'overline' }}
-                />
-                <Alert style={{ height: '120px' }} icon={false} severity="info">
-                  {description}
-                </Alert>
-              </CardContent>
-              <CardActions dir={'rtl'}>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(wiki_url, '_blank');
-                  }}
-                  size="small"
-                >
-                  More
-                </Button>
-              </CardActions>
-            </>
-          </FlashContent>
+          <CardBack imageUrl={revisionlessUrl} airDate={air_date} description={description} externalLink={wiki_url} />
         )}
       </StyledCard>
     </ClickAwayListener>

@@ -16,9 +16,8 @@ const CharacterContentCard = ({ character, onClickAway }) => {
     'family',
     'relatives',
     'url',
-  ]; // Add any keys you want to exclude
-
-  // Filter out null, undefined, and omitted keys
+  ];
+  
   const characterDetails = Object.entries(character || {}).filter(
     ([key, value]) => value !== null && value !== undefined && !keysToOmit.includes(key)
   );

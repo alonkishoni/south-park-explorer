@@ -1,14 +1,8 @@
 import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
+  Avatar, Fade,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
 import { memo, useCallback } from 'react';
@@ -17,7 +11,7 @@ const StyledListItem = styled(ListItem)`
   transition: all 0.1s;
   background-color: ${(props) => (props.selected ? '#f5f5f5' : 'white')};
   cursor: pointer;
-  &: hover {
+  &:hover {
     background-color: #1976d214;
   }
 `;
@@ -31,12 +25,14 @@ const CharacterListItem = ({ id, name, onClick, isSelected }) => {
   );
 
   return (
-    <StyledListItem onClick={handleClick} selected={isSelected}>
-      <ListItemAvatar>
-        <Avatar></Avatar>
-      </ListItemAvatar>
-      <ListItemText primary={name} />
-    </StyledListItem>
+    <Fade in={true}>
+      <StyledListItem onClick={handleClick} selected={isSelected}>
+        <ListItemAvatar>
+          <Avatar></Avatar>
+        </ListItemAvatar>
+        <ListItemText primary={name} />
+      </StyledListItem>
+    </Fade>
   );
 };
 
