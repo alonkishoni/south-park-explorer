@@ -2,7 +2,7 @@ import {Alert, Avatar, Button, CardActions, CardContent, CardHeader} from "@mui/
 import {formatDate} from "../../../../utils/date.utils.js";
 import {memo} from "react";
 
-const CardBack = ({ imageUrl, airDate, description, externalLink }) => {
+const CardBack = ({ name, imageUrl, airDate, description, externalLink }) => {
   return (
     <>
       <CardContent>
