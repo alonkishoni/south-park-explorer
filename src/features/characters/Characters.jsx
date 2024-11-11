@@ -1,18 +1,19 @@
 import useCharactersStore from '../../stores/characters.store.js';
-import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll.hook.jsx';
 import { getCharacters } from '../../network/apiClient.js';
-import { Backdrop, Box, Container, List, Popover, Popper, Skeleton } from '@mui/material';
+import { Backdrop, Box, Container, List, Popover } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDebounce } from '../../hooks/useDebounce.hook.jsx';
 import { Search } from '../../components/Search/Search.jsx';
-import { areEqual, FixedSizeList } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import CharacterContentCard from './CharacterContentCard/CharacterContentCard.jsx';
+import ListSkeletonLoader from "../../components/ListSkeletonLoader/ListSkeletonLoader.jsx";
 
-const CharacterListItem = lazy(() => import('./CharacterListItem/CharacterListItem.jsx'));
+const VirtualizedCharacterRow = lazy(() => import("./VirtualizedCharacterRow/VirtualizedCharacterRow.jsx"));
 
 export const Characters = () => {
   const characters = useCharactersStore((state) => state.characters);
@@ -93,43 +94,24 @@ export const Characters = () => {
   const { lastItemRef } = useInfiniteScroll(
     fetchNextPage,
     !isLoading && hasNextPage,
-    '100px'
+    '2500px'
   );
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [debouncedSearchTerm]);
 
-  const VirtualizedCharacterRow = memo(({ index, style }) => {
-    const character = displayedCharacters[index];
-
-    if (!character) return;
-
-    return (
-      <div
-        id={`character-${character.id}`}
-        style={{
-          ...style,
-          ...{ display: 'flex', justifyContent: 'center', alignItems: 'center' },
-        }}
-        ref={index === displayedCharacters.length - 1 ? lastItemRef : null}
-      >
-        <CharacterListItem
-          onClick={onCharacterSelect}
-          name={character?.name}
-          id={character?.id}
-          isSelected={selectedCharacter?.id === character?.id}
-        />
-      </div>
-    );
-  }, areEqual);
-  VirtualizedCharacterRow.displayName = 'VirtualizedCharacterRow';
+  const itemData = useMemo(
+    () => ({
+      displayedCharacters, onCharacterSelect, lastItemRef, selectedCharacter
+    }),
+    [displayedCharacters, onCharacterSelect, lastItemRef, selectedCharacter]
+  );
 
   return (
     <Container style={{ display: 'flex', justifyContent: 'center', paddingTop: '70px' }}>
       <ToastContainer hideProgressBar transition={Zoom} />
       <Search onChange={onSearchChange} value={searchTerm} />
-      <Suspense fallback={<Skeleton variant="rounded" width={360} height={100} />}>
         <List
           sx={{
             height: '100vh',
@@ -137,18 +119,22 @@ export const Characters = () => {
             paddingInline: '40px',
           }}
         >
-          <AutoSizer>
-            {({ height, width }) => (
-              <FixedSizeList
-                height={height}
-                width={width}
-                itemSize={80}
-                itemCount={displayedCharacters.length}
-              >
-                {VirtualizedCharacterRow}
-              </FixedSizeList>
-            )}
-          </AutoSizer>
+          <Suspense fallback={<ListSkeletonLoader itemCount={20} />}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <FixedSizeList
+                  height={height}
+                  width={width}
+                  itemSize={80}
+                  itemCount={displayedCharacters.length}
+                  itemData={itemData}
+                  itemKey={(index, data) => data.displayedCharacters?.[index]?.id}
+                >
+                  {VirtualizedCharacterRow}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          </Suspense>
         </List>
         <Popover
           open={isCardOpen}
@@ -164,7 +150,6 @@ export const Characters = () => {
           </Box>
         </Popover>
         <Backdrop open={!!selectedCharacter} onClick={handleCardClose}></Backdrop>
-      </Suspense>
     </Container>
   );
 };
