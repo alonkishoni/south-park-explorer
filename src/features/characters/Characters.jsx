@@ -120,6 +120,7 @@ export const Characters = () => {
           }}
         >
           <Suspense fallback={<ListSkeletonLoader itemCount={20} />}>
+            {!characters.length && <ListSkeletonLoader itemCount={20} />}
             <AutoSizer>
               {({ height, width }) => (
                 <FixedSizeList
