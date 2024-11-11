@@ -70,7 +70,7 @@ const EpisodeCard = ({ episode }) => {
             <CardFront name={name} imageUrl={revisionlessUrl} ep={ep} season={season} airDate={air_date} />
           </FadeIn>
         ) : (
-          <CardBack imageUrl={revisionlessUrl} airDate={air_date} description={description} externalLink={wiki_url} />
+          <CardBack name={name} imageUrl={revisionlessUrl} airDate={air_date} description={description} externalLink={wiki_url} />
         )}
       </StyledCard>
     </ClickAwayListener>
